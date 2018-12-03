@@ -79,6 +79,10 @@ exports.Parse = function(multipartBodyBuffer, boundary) {
   var buffer = [];
   var allParts = [];
 
+  if (typeof multipartBodyBuffer === "string") {
+    multipartBodyBuffer = Buffer(multipartBodyBuffer);
+  }
+
   for (i = 0; i < multipartBodyBuffer.length; i++) {
     var oneByte = multipartBodyBuffer[i];
     var prevByte = i > 0 ? multipartBodyBuffer[i - 1] : null;
