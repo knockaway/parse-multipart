@@ -124,7 +124,21 @@ exports.Parse = function(multipartBodyBuffer, boundary) {
       if (newLineDetected) state = 1;
     }
   }
-  return allParts;
+
+  // Knock-specific logic:
+  // Put together parts like: [{key: 'foo', value: 'abc'}, {key: 'foo', value: 'def'}, {key: 'bar', value: '123'}]
+  // Into simple object like: {foo: 'abcdef', bar: '123'}
+  var result = {};
+  for (i = 0; i < allParts.length; i++) {
+    if (!result[allParts[i].key]) {
+      result[allParts[i].key] = allParts[i].value;
+    } else {
+      result[allParts[i].key] = result[allParts[i].key].concat(
+        allParts[i].value
+      );
+    }
+  }
+  return result;
 };
 
 //  read the boundary from the content-type header sent by the http client
